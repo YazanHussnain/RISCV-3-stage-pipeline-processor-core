@@ -1,4 +1,5 @@
-module DataMemory(readData, stallOut, Addr, dataWrite, wr_en, rd_en, chipSelect, clk, reset, mask, stallIn, ack_intrpt, ack_timerIntrpt, dataDisplay);
+module DataMemory #(parameter string INIT_FILE = "", parameter int DEPTH = 65536)
+                  (readData, stallOut, Addr, dataWrite, wr_en, rd_en, chipSelect, clk, reset, mask, stallIn, ack_intrpt, ack_timerIntrpt, dataDisplay);
 
     output logic [31:0] readData;
     output logic stallOut;
@@ -7,11 +8,16 @@ module DataMemory(readData, stallOut, Addr, dataWrite, wr_en, rd_en, chipSelect,
     input logic clk, reset, wr_en, rd_en, chipSelect, stallIn, ack_intrpt, ack_timerIntrpt;
     input [3:0] mask;
 
-    logic [31:0] dataMemory [0:512];
+    logic [31:0] dataMemory [0:DEPTH-1];
     logic interrupt;
+    string dmem_path;
 
     initial begin
-        $readmemh("E:/CA_Lab/RISC-V/RISC-V_3Stage_Pipeline_HDU_CSR_7SEG_uart/DataMemory.mem", dataMemory, 0, 511);
+        if (INIT_FILE != "") begin
+            $readmemh(INIT_FILE, dataMemory);
+        end else if ($value$plusargs("dmem=%s", dmem_path)) begin
+            $readmemh(dmem_path, dataMemory);
+        end
     end
 
     always_ff @(posedge clk) begin

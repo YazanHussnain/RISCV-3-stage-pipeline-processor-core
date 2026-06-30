@@ -5,6 +5,7 @@ module SignExtender(signEx_out, signEx_in, signEx_sel);
     input logic [2:0] signEx_sel;
 
     always_comb begin
+        signEx_out = 32'h0;   // default (no latch when signEx_sel unmatched)
         case(signEx_sel)
             3'h0: begin
                 signEx_out = {{20{signEx_in[24]}}, signEx_in[24:13]}; /* Imm 31:21 I type */
@@ -21,6 +22,7 @@ module SignExtender(signEx_out, signEx_in, signEx_sel);
             3'h4: begin
                 signEx_out = {{20{signEx_in[24]}}, signEx_in[24:18], signEx_in[4:0]};
             end
+            default: ;
         endcase
     end
 

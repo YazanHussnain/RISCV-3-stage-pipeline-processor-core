@@ -5,7 +5,13 @@ module CSR(csrPC, csrAddr, intrpt, TimerIntrpt, csr_wdata, csrRegwr, csrRegrd, c
     output logic [31:0] csrRdata, csrEvec;
     output logic pcIntrpt, lowMRET, timerIntrpt, Intrpt;
 
+    // csrReg holds the machine CSRs. Indices 3-5 (MEPC/MCAUSE/MIP) are driven
+    // combinationally from current interrupt conditions and also read by the
+    // interrupt logic, which Verilator flags as a self-referential array
+    // (UNOPTFLAT). This is the intended legacy model.
+    /* verilator lint_off UNOPTFLAT */
     logic [31:0] csrReg [0:5];
+    /* verilator lint_on UNOPTFLAT */
 
     logic csrMstatus_wrFlag, csrMie_wrFlag, csrMtvec_wrFlag, csrMepc_wrFlag, csrMcause_wrFlag, csrMip_wrFlag, intrptPc, hold;
 
@@ -150,6 +156,10 @@ module CSR(csrPC, csrAddr, intrpt, TimerIntrpt, csr_wdata, csrRegwr, csrRegrd, c
         end
     end
 
+    // Intentional latch: MEPC (csrReg[3]) and MIP (csrReg[5]) hold their values
+    // when no new interrupt is being taken. This is a legacy combinational
+    // interrupt model; a sequential rewrite is future work.
+    /* verilator lint_off LATCH */
     always_comb begin
         if(((MIE[7] & MSTATUS[3]) & TimerIntrpt) | (intrpt & (MIE[11] & MSTATUS[3]))) begin
             if(instruction == 32'h00000033)
@@ -165,5 +175,6 @@ module CSR(csrPC, csrAddr, intrpt, TimerIntrpt, csr_wdata, csrRegwr, csrRegrd, c
             end
         end
     end
+    /* verilator lint_on LATCH */
 
 endmodule

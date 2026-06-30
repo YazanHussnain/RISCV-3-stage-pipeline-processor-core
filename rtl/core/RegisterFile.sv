@@ -1,4 +1,5 @@
-module RegisterFile(readData1, readData2, writeData, readAddr1, readAddr2, writeAddr, write_enable, clk, reset, TimerIntrpt, intrpt);
+module RegisterFile #(parameter string INIT_FILE = "")
+                    (readData1, readData2, writeData, readAddr1, readAddr2, writeAddr, write_enable, clk, reset, TimerIntrpt, intrpt);
 
     output logic [31:0] readData1, readData2;
     input logic [4:0] readAddr1, readAddr2, writeAddr;
@@ -7,9 +8,14 @@ module RegisterFile(readData1, readData2, writeData, readAddr1, readAddr2, write
 
     logic [31:0] registers [0:31];
     logic interrupt;
+    string regfile_path;
 
     initial begin
-        $readmemh("E:/CA_Lab/RISC-V/RISC-V_3Stage_Pipeline_HDU_CSR_7SEG_uart/Register.mem", registers, 0, 31);
+        if (INIT_FILE != "") begin
+            $readmemh(INIT_FILE, registers);
+        end else if ($value$plusargs("regfile=%s", regfile_path)) begin
+            $readmemh(regfile_path, registers);
+        end
     end
 
     always_comb begin

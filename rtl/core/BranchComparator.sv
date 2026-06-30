@@ -35,7 +35,7 @@ module BranchComparator(branchType, branchTaken, reg1, reg2);
             3'h6: begin
                 branchTaken = 1'b1;
             end
-            4'h7: begin
+            3'h7: begin
                 branchTaken = 1'b0;
             end
             default: begin
