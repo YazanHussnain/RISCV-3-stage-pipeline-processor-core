@@ -10,8 +10,8 @@ module LoadStoreUnit(lsuDataout, Addr, lsuDataIn, WBdata, addrOut, mask, writeDa
     input logic rd_enIn, wr_enIn, stallDPIN, stallFSFOut, ack_intrptIn, ack_timerIntrptIn, uart_select, tx_busy, clk;
 
     always_comb begin
-        stallDPOut <= stallFSFOut;
-        stallFSFIn <= stallDPIN;
+        stallDPOut = stallFSFOut;
+        stallFSFIn = stallDPIN;
     end
 
     always_comb begin
@@ -22,6 +22,8 @@ module LoadStoreUnit(lsuDataout, Addr, lsuDataIn, WBdata, addrOut, mask, writeDa
         ack_intrptOut = ack_intrptIn;
         ack_timerIntrptOut = ack_timerIntrptIn;
         byte_ready = 1'b0;
+        WBdata = lsuDataIn;   // default (no latch when rd_sel unmatched)
+        mask = 4'b0000;       // default (no byte write when wr_sel unmatched)
         case(rd_sel)
             3'h0: begin
                 case(Addr[1:0])
@@ -78,6 +80,7 @@ module LoadStoreUnit(lsuDataout, Addr, lsuDataIn, WBdata, addrOut, mask, writeDa
                     end
                 endcase
             end
+            default: ;
         endcase
         case(wr_sel)
             2'h0: begin
@@ -109,6 +112,7 @@ module LoadStoreUnit(lsuDataout, Addr, lsuDataIn, WBdata, addrOut, mask, writeDa
                 end
             endcase
             end
+            default: ;
         endcase
         if(uart_select & ~ack_intrptIn & ~ack_timerIntrptIn) begin
             if(~tx_busy) begin

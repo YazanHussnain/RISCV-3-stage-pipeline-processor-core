@@ -25,7 +25,8 @@ module UART (
       .load_data(load_data),
       .reset(reset),
       .byte_ready(byte_ready),
-      .uart_select(uart_select)
+      .uart_select(uart_select),
+      .CLK(CLK)
   );
   Mux2x1 mux2x1 (
       .out(Tx),

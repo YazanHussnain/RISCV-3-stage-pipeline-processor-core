@@ -21,7 +21,7 @@ module Bit_Counter (
       done <= 1'b1;
     end else if (bit_counter == 4'h9) begin
       count_of <= 1'b1;
-      bit_counter <= 1'b0;
+      bit_counter <= 4'b0000;
       done <= 1'b1;
     end else begin
       count_of <= 1'b0;

@@ -11,10 +11,10 @@ module refreshCounter(clk, reset, anodeCounter);
 
     always_ff @(posedge clk) begin
         if(reset) begin
-            counter <= 1'b0;
+            counter <= 20'b0;
         end
         else begin
-            counter <= counter + 1;
+            counter <= counter + 20'd1;
         end
     end
 

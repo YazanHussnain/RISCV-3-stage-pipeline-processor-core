@@ -13,7 +13,7 @@ module TimerIntrpt(intrpt, clk, reset);
         end
         if(count == 30) begin
             intrpt <= 1'b1;
-            count <= 1'b0;
+            count <= 16'b0;
         end
         else begin
             intrpt <= 1'b0;

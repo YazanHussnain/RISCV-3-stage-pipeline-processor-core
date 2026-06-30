@@ -1,0 +1,9 @@
+# build artifacts
+sim/obj_dir/
+sim/*.vcd
+*.o
+
+# python venv
+.venv/
+__pycache__/
+*.pyc
